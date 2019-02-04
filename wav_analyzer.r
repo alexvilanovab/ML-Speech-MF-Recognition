@@ -172,4 +172,4 @@ processFolder <- function(folderName) {
   acoustics
 }
 
-processFolder("Test")
+processFolder("Data")
