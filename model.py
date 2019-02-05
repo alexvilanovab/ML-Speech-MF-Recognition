@@ -1,36 +1,54 @@
 import numpy as np
 from sklearn.model_selection import cross_val_score
 import pandas as pd
+import os
+#import subprocess
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 df = pd.read_csv('dataSet.csv')
-df.info()
+#df.info()
 df.replace('male', 0, inplace = True)
 df.replace('female', 1, inplace = True)
 X = df.drop('label', axis = 1)
 y = df['label']
 
-
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42) #increase random_state
 
 rfc = RandomForestClassifier(n_estimators = 50)
+print("Training model...")
 rfc.fit(X_train, y_train)
 scores = cross_val_score(rfc, X, y, cv = 50)
+print("Model trained.")
 print('Acuracy: ', scores.mean()*100, '%')
 
-#Create a heat map of the ecovariance matrix
-#plt.figure(figsize=(14,12))
+#subprocess.call(["Rscript wav_analyzer.r"])
+print("Measuring acoustic parameters...")
+os.system("Rscript wav_analyzer.r >/dev/null 2>&1")
+print("   Done.")
 
-#sns.heatmap(df.corr(), linewidths=0.1, annot = True)
-#plt.show()
 
-#prediction = rfc.predict( [[0.1984445, 0.06684052, 0.2157356, 0.1375283, 0.264536, 0.1270077, 3.38914, 20.50335, 0.8929154, 0.3376926, 0.1200362, 0.1984445, 0.1396227, 0.04349112, 0.2791139, 0.4190832, 0, 5.081836, 5.081836, 0.07727807]] )
+df_pred = pd.read_csv('testData.csv')
+#df_pred.info()
+df_names = df_pred['sound.files'].copy()
+df_pred.drop(['sound.files', 'duration', 'selec', 'peakf', 'Unnamed: 0'], axis=1, inplace=True) #inplace=True
+#df_pred.info()
+#print(df_pred.head())
+prediction = rfc.predict(df_pred)
+#print(prediction)
+#if prediction[0] == 0:
+ #   print("The subject is a male")
+#else:
+ #   print("The subject is a female")
 
-prediction = rfc.predict([[0.2022728,0.04060666,0.2129694,0.1821243,0.227241,0.04511674,3.040879, 17.07277,0.8827420,0.2635666,0.1200658, 0.2022728,0.1497998,0.04319295,0.2791139,0.3374789,0,1.593457,1.593457,0.11383929]])
-if prediction[0] == 0:
-    print("The subject is a male")
-else:
-    print("The subject is a female")
+#print(df_names.head())
+
+for i in range(len(prediction)):
+    #print(df_names.at[i,'sound.files'], end=':\n')
+    print(df_names[i].split('.')[0], " is a ", end='')
+    if prediction[i] == 0:
+        print("male")
+    else:
+        print("female")
