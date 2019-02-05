@@ -1,18 +1,23 @@
+options(warn=-1)
+assign("last.warning", NULL, envir = baseenv())
+#Tries to remove all warnings
+
 #install.packages(c('tuneR', 'seewave', 'fftw', 'caTools', 'randomForest', 'warbleR', 'mice', 'e1071', 'rpart', 'rpart-plot', 'xgboost', 'e1071') ,repos = "http://cran.us.r-project.org" )
 #packages <- c('tuneR', 'seewave', 'fftw', 'caTools', 'randomForest', 'warbleR', 'mice', 'e1071', 'rpart', 'rpart-plot', 'xgboost', 'e1071')
 #if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
  # install.packages(setdiff(packages, rownames(installed.packages())))  
 #}
-library(tuneR)
-library(seewave)
+#library(tuneR)
+#library(seewave)
 #library(caTools)
 #library(rpart)
 #library(rpart.plot)
 #library(randomForest)
-library(warbleR)
+invisible(library(warbleR))
 #library(mice)
 #library(xgboost)
 #library(e1071)
+
 
 specan3 <- function(X, bp = c(0,22), wl = 2048, threshold = 5, parallel = 1){
   # To use parallel processing: library(devtools), install_github('nathanvan/parallelsugar')
@@ -164,12 +169,21 @@ processFolder <- function(folderName) {
   setwd(folderName)
   
   # Process files.
-  acoustics <- specan3(data, parallel=1)
+  acoustics <- invisible(specan3(data, parallel=1))
   
   # Move back into parent folder.
   setwd('..')
   
   acoustics
+  write.csv(acoustics, file = "testData.csv")
+  #Writes scv file with n rows and 25 cols
 }
 
-processFolder("Data")
+
+#filePath <- readline(prompt="Enter file name: ")
+#paste("Data", filePath, sep="/")
+#processFolder("Data/" + filePath)
+#processFolder( paste("Data", filePath, sep="/") )
+#sink(processFolder("Data"))
+invisible(processFolder("Data"))
+print("Done!")
