@@ -1,5 +1,5 @@
 import pickle
-
+import time
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import cross_val_score
@@ -17,6 +17,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random
 
 rfc = RandomForestClassifier(n_estimators = 50) #Modify hyperparameters to increase accuracy
 print("Training model...")
+start = time.time() # Start calculating training time
 rfc.fit(X_train, y_train)
 
 ##SERIALIZATION TEST
@@ -27,12 +28,18 @@ serial_rfc = pickle.dump(rfc, f)
 scores = cross_val_score(rfc, X, y, cv = 50)
 print("Model trained.")
 #Calculates the accuracy score
-print('Acuracy: ', scores.mean()*100, '%')
+print('Acuracy: ', round(scores.mean()*100,2), '%')
+
+#Calculates the training time
+end = time.time()
+print("Training time: ", round(end-start,2), "s")
 
 print("Measuring acoustic parameters...")
+start = time.time()
 os.system("Rscript wav_analyzer.r >/dev/null 2>&1")
 print("Done.")
-
+end = time.time()
+print("Analysis time: ", round(end-start,2), "s")
 
 df_pred = pd.read_csv('testData.csv')
 #Reads audio data from testData
