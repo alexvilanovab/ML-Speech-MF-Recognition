@@ -22,12 +22,12 @@ rfc.fit(X_train, y_train)
 
 ##SERIALIZATION TEST
 
-f = open("trained_classifier", 'wb')
+f = open("trained_classifier.bin", 'wb')
 serial_rfc = pickle.dump(rfc, f)
 
 scores = cross_val_score(rfc, X, y, cv = 50)
 print("Model trained.")
-print("Model saved as trained_classifier")
+print("Model saved as trained_classifier.bin")
 #Calculates the accuracy score
 print('Acuracy: ', round(scores.mean()*100,2), '%')
 

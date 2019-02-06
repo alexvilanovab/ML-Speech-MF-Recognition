@@ -123,7 +123,7 @@ record_to_file("Data/" + path, secs)
 print("done - result written to " + path)
 
 
-f = open("trained_classifier", "rb")
+f = open("trained_classifier.bin", "rb")
 rfc = pickle.load(f)
 
 
