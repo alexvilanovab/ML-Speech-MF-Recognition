@@ -10,27 +10,28 @@ from sklearn.ensemble import RandomForestClassifier
 df = pd.read_csv('dataSet.csv')
 df.replace('male', 0, inplace = True)
 df.replace('female', 1, inplace = True)
-X = df.drop('label', axis = 1)
+X = df.drop(['label', 'Q75', 'skew', 'kurt', 'modindx'], axis = 1)
 y = df['label']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42) #Play with hyperparameters
 
-rfc = RandomForestClassifier(n_estimators = 50) #Modify hyperparameters to increase accuracy
+est = int(input("Choose number of estimators (100 recommended): "))
+
+rfc = RandomForestClassifier(n_estimators = est) #Modify hyperparameters to increase accuracy
 print("Training model...")
 start = time.time() # Start calculating training time
 rfc.fit(X_train, y_train)
 
-##SERIALIZATION TEST
-
+#Saves the trained model to a binary file
 f = open("trained_classifier.bin", 'wb')
 serial_rfc = pickle.dump(rfc, f)
 
 scores = cross_val_score(rfc, X, y, cv = 50)
-print("Model trained.")
-print("Model saved as trained_classifier.bin")
+print("Done", end='\n\n')
 #Calculates the accuracy score
-print('Acuracy: ', round(scores.mean()*100,2), '%')
 
 #Calculates the training time
 end = time.time()
 print("Training time: ", round(end-start,2), "s")
+print('Acuracy: ', round(scores.mean()*100,4), '%')
+print("Model saved as trained_classifier.bin")
