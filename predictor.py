@@ -54,7 +54,7 @@ def trim(data_all):
             _to = min(len(data_all) - 1, len(data_all) - 1 - i + TRIM_APPEND)
             break
 
-    return copy.deepcopy(data_all[_from:(_to + 1)])
+    return copy.deepcopy(data_all[int(_from): int((_to + 1))])
 
 def record(t):
     """Record a word or words from the microphone and 
