@@ -1,2 +1,2 @@
-# ML-Speech-Gender-Recognition
+# ML-Speech-MF-Recognition
 Projecte final del curs de Machine Learning.
